@@ -143,6 +143,44 @@ docs: update contributing guide
   - Add JSDoc comments for public APIs
   - Validate all Caddy config output before exposing via API
 
+### Type Definitions — Extract to Shared Types
+
+  Type definitions (`type`, `interface`) that are **not** derived from a runtime value must be extracted to:
+
+```
+src/shared/types/<name>.d.ts
+```
+
+  This keeps runtime logic and type declarations cleanly separated across the codebase.
+
+```typescript
+// ✅ Correct — type lives in src/shared/types/theme.d.ts
+type ThemeMode = "light" | "dark" | "auto"
+```
+
+```typescript
+// ❌ Incorrect — type defined inline inside a .tsx / .ts file
+type ThemeMode = "light" | "dark" | "auto"
+
+function applyTheme(mode: ThemeMode): void { ... }
+```
+
+  **Exception — `typeof`-inferred types**
+
+  When a type is derived directly from a runtime variable via `typeof`, it **must stay inline, co-located with its source variable**. Moving it to a `.d.ts` file would require duplicating the value or break the derivation entirely.
+
+```typescript
+// ✅ Correct — inline, immediately after the constant it depends on
+const DARK_THEME_LIST = ["frappe", "macchiato", "mocha"] as const
+type DarkTheme = (typeof DARK_THEME_LIST)[number]
+
+// ❌ Incorrect — copied manually into .d.ts, now out-of-sync risk
+// src/shared/types/theme.d.ts
+type DarkTheme = "frappe" | "macchiato" | "mocha"
+```
+
+  > Rule of thumb: if defining the type requires referencing a `const` variable, keep it inline next to that variable.
+
 ### Coding Principles
 
 #### Naming — No Excessive Abbreviation

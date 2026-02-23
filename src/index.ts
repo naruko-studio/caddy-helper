@@ -1,8 +1,24 @@
 // TODO: Main Entry Point
-import { Elysia } from "elysia";
+import { Elysia } from "elysia"
+import { staticPlugin } from "@elysiajs/static"
+import { openapi, fromTypes } from "@elysiajs/openapi"
+import { createLogger } from "@/shared/utils/logger"
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+const console = createLogger("core")
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+console.debug("Creating Elysia instance")
+const app = new Elysia()
+console.debug("Initializing plugins")
+console.debug("Initializing OpenAPI plugin")
+app.use(openapi({ references: fromTypes() }))
+console.debug("OpenAPI plugin initialized")
+console.debug("Initializing static plugin")
+app.use(await staticPlugin({ prefix: "/" }))
+console.debug("Static plugin initialized")
+
+console.debug("Starting server...")
+app.listen(3000, (server) => {
+  console.box(
+    `🦊 Elysia as Fullstack Framework 🚀\nServer started with BPM ${server.port}\nLet's goooooooo!\n-> local: ${server.url}`,
+  )
+})
