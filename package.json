@@ -2,17 +2,21 @@
   "name": "caddy-helper",
   "version": "1.0.50",
   "scripts": {
-    "dev": "bun run --watch src/index.ts"
+    "dev": "NODE_ENV=development bun run --watch src/index.ts",
+    "build": "NODE_ENV=production bun run build.ts"
   },
   "dependencies": {
     "@elysiajs/openapi": "^1.4.14",
     "@elysiajs/static": "^1.4.7",
     "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-router": "^1.162.4",
     "clsx": "^2.1.1",
+    "consola": "^3.4.2",
     "elysia": "latest",
     "ofetch": "^1.5.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "std-env": "^4.0.0-rc.1",
     "tailwindcss": "^4.2.0"
   },
   "devDependencies": {
